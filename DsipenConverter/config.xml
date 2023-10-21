@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Config>
+  <InputDirectory>C:\Dispen\In</InputDirectory>
+  <OutputDirectory>C:\Dispen\Out</OutputDirectory>
+  <ProcessedFileDirectory>C:\Dispen\Processed</ProcessedFileDirectory>
+</Config>
