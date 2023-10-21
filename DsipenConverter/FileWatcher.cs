@@ -89,9 +89,9 @@ namespace DsipenConverter
             {
                 typeEvent = getValue(prescription.Prescription.ElémentPrescrMédic.ComposantPrescrit.TypeEvenementDebut);
             }
-            
+            bool isBesoin = typeEvent.ToLower() == "sb";
 
-            string ss = $"{getValue(prescription.Patient.Prénoms + " " + prescription.Patient.NomNaissance)}{tab}";
+
             string resultLine =
                     // 1 N° établissement
                     $"{getValue(prescription.Prescription.UnitéHébergement.Text)}{tab}" +
@@ -104,7 +104,7 @@ namespace DsipenConverter
                     // 5 N° patient
                     $"{getValue(prescription.Patient.Ipp)}{tab}" +
                     // 6 Nom patient (*)
-                    $"{getValue(prescription.Patient.Prénoms + " " + prescription.Patient.NomNaissance)}{tab}" +
+                    $"{getValue(prescription.Patient.Prénoms + " " + prescription.Patient.NomUsuel)}{tab}" +
                     // 7 Code médecin (blanc)
                     $"{"999"}{tab}" +
                     // 8 Nom médecin
@@ -120,7 +120,7 @@ namespace DsipenConverter
                     // 13 Hors pilulier 0=non 1=oui
                     $"{getValue(prescription.Prescription.ElémentPrescrMédic.Fourniture)}{tab}" +
                     // 14 Dispensé si besoin 0=non 1=oui (si 1, les 24 quantités sont à zéro et ‘dispensé jour X’ à ‘0’)
-                    $"{typeEvent}{tab}" +
+                    $"{(isBesoin?"1":"0")}{tab}" +
                     // 15 Code forme médicament (si inexistant, mettre un blanc) 
                     $"{blanc}{tab}" +
                     // 16 Nom forme médicament (*)
@@ -135,7 +135,7 @@ namespace DsipenConverter
             if (from.HasValue && to.HasValue)
             {
                 int iCOunt = 0;
-                string posologie = getPoso(prescription.Prescription.ElémentPrescrMédic.ElémentPosologie);
+                string posologie = getPoso(prescription.Prescription.ElémentPrescrMédic.ElémentPosologie, isBesoin);
                 resultLine = resultLine + posologie + tab;
 
                 // Compléter les 6 jours 
@@ -145,7 +145,7 @@ namespace DsipenConverter
                     iCOunt++;
                     if (iCOunt <= 31)
                     {
-                        resultLine = resultLine + "1" + tab;
+                        resultLine = resultLine + (isBesoin? "0" :"1") + tab;
                     }
                 }
                 /// Le reste est dispensé 
@@ -183,7 +183,7 @@ namespace DsipenConverter
             for (var day = from.Date; day.Date <= thru.Date; day = day.AddDays(1))
                 yield return day;
         }
-        private static string getPoso(List<ElémentPosologie> elementPosologies)
+        private static string getPoso(List<ElémentPosologie> elementPosologies, bool IsSelonBesoin)
         {
             bool is01 = false;
             bool is02 = false;
@@ -209,85 +209,88 @@ namespace DsipenConverter
             bool is22 = false;
             bool is23 = false;
             bool is24 = false;
-            foreach (var elementPosologie in elementPosologies)
+            if (!IsSelonBesoin)
             {
-                switch((getValueAsTime(elementPosologie.EvénementDébut).Trim()))
+                foreach (var elementPosologie in elementPosologies)
                 {
-                    case "01":
-                        is01 = true;
-                        break;
-                    case "02":
-                        is02 = true;
-                        break;
-                    case "03":
-                        is03 = true;
-                        break;
-                    case "04":
-                        is04 = true;
-                        break;
-                    case "05":
-                        is05 = true;
-                        break;
-                    case "06":
-                        is06 = true;
-                        break;
-                    case "07":
-                        is07 = true;
-                        break;
-                    case "08":
-                        is08 = true;
-                        break;
-                    case "09":
-                        is09 = true;
-                        break;
-                    case "10":
-                        is10 = true;
-                        break;
-                    case "11":
-                        is11 = true;
-                        break;
-                    case "12":
-                        is12 = true;
-                        break;
-                    case "13":
-                        is13 = true;
-                        break;
-                    case "14":
-                        is14 = true;
-                        break;
-                    case "15":
-                        is15 = true;
-                        break;
-                    case "16":
-                        is16 = true;
-                        break;
-                    case "17":
-                        is17 = true;
-                        break;
-                    case "18":
-                        is18 = true;
-                        break;
-                    case "19":
-                        is19 = true;
-                        break;
-                    case "20":
-                        is20 = true;
-                        break;
-                    case "21":
-                        is21 = true;
-                        break;
-                    case "22":
-                        is22 = true;
-                        break;
-                    case "23":
-                        is23 = true;
-                        break;
-                    case "24":
-                        is24 = true;
-                        break;
+                    switch ((getValueAsTime(elementPosologie.EvénementDébut).Trim()))
+                    {
+                        case "01":
+                            is01 = true;
+                            break;
+                        case "02":
+                            is02 = true;
+                            break;
+                        case "03":
+                            is03 = true;
+                            break;
+                        case "04":
+                            is04 = true;
+                            break;
+                        case "05":
+                            is05 = true;
+                            break;
+                        case "06":
+                            is06 = true;
+                            break;
+                        case "07":
+                            is07 = true;
+                            break;
+                        case "08":
+                            is08 = true;
+                            break;
+                        case "09":
+                            is09 = true;
+                            break;
+                        case "10":
+                            is10 = true;
+                            break;
+                        case "11":
+                            is11 = true;
+                            break;
+                        case "12":
+                            is12 = true;
+                            break;
+                        case "13":
+                            is13 = true;
+                            break;
+                        case "14":
+                            is14 = true;
+                            break;
+                        case "15":
+                            is15 = true;
+                            break;
+                        case "16":
+                            is16 = true;
+                            break;
+                        case "17":
+                            is17 = true;
+                            break;
+                        case "18":
+                            is18 = true;
+                            break;
+                        case "19":
+                            is19 = true;
+                            break;
+                        case "20":
+                            is20 = true;
+                            break;
+                        case "21":
+                            is21 = true;
+                            break;
+                        case "22":
+                            is22 = true;
+                            break;
+                        case "23":
+                            is23 = true;
+                            break;
+                        case "24":
+                            is24 = true;
+                            break;
+                    }
                 }
             }
-            return
+                return
                 getSinglePoso(is01) + tab +
                 getSinglePoso(is02) + tab +
                 getSinglePoso(is03) + tab +
@@ -370,7 +373,7 @@ namespace DsipenConverter
         {
             if (!string.IsNullOrEmpty(value) && value.Length >= 12)
             {
-                value = value.Substring(8, 2)+":"+ value.Substring(10, 2);
+                value = value.Substring(8, 2)+" :"+ value.Substring(10, 2);
             }
             return value;
         }
