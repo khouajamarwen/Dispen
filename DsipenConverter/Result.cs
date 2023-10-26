@@ -35,7 +35,7 @@ namespace DsipenConverter
 	{
 
 		[XmlElement(ElementName = "Id_séjour")]
-		public int IdSéjour { get; set; }
+		public string IdSéjour { get; set; }
 	}
 
 	[XmlRoot(ElementName = "Unité_hébergement")]
@@ -105,9 +105,6 @@ namespace DsipenConverter
 	[XmlRoot(ElementName = "Composant_prescrit")]
 	public class ComposantPrescrit
 	{
-		[XmlElement(ElementName = "Type_événement_début")]
-		public string TypeEvenementDebut { get; set; }
-
 		[XmlElement(ElementName = "Type_composant_1")]
 		public int TypeComposant1 { get; set; }
 
@@ -160,11 +157,11 @@ namespace DsipenConverter
 	[XmlRoot(ElementName = "Elément_posologie")]
 	public class ElémentPosologie
 	{
-		[XmlElement(ElementName = "Type_évènement_début")]
+		[XmlElement(ElementName = "Type_événement_début")]
 		public string TypeEvenementDebut { get; set; }
 
 		[XmlElement(ElementName = "Fréquence")]
-		public Fréquence Fréquence { get; set; }
+		public string Fréquence { get; set; }
 
 		[XmlElement(ElementName = "Evénement_début")]
 		public string EvénementDébut { get; set; }
