@@ -48,12 +48,13 @@ namespace DsipenConverter
 
                 string result = string.Empty;
                 int lineCount = 0;
-                string fileName = string.Empty;
+                string baseFileName = DateTime.Now.Year.ToString() + "__" + DateTime.Now.Month.ToString() + "__" + DateTime.Now.Day.ToString() + "__";
+                string fileName = baseFileName;
                 foreach (var prescription in messages.MPrescriptionMédicaments)
                 {
                     if(prescription.Séjour is not null && !string.IsNullOrEmpty(prescription.Séjour.IdSéjour))
                     {
-                        fileName = prescription.Séjour.IdSéjour.ToString();
+                        fileName = fileName+ prescription.Séjour.IdSéjour.ToString();
                     }
                     lineCount++;
                     result += createLine(prescription);
